@@ -44,9 +44,9 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:doketan/math-geometry.git</connection>
-        <developerConnection>scm:git:ssh://github.com:doketan/math-geometry.git</developerConnection>
-        <url>https://github.com/doketan/math-geometry/tree/master</url>
+        <connection>scm:git:git@github.com:intuitonlabs/duocart-shippo-integration.git</connection>
+        <developerConnection>scm:git:ssh://github.com:intuitonlabs/duocart-shippo-integration.git</developerConnection>
+        <url>https://github.com/intuitonlabs/duocart-shippo-integration/tree/master</url>
     </scm>
 
     <properties>
