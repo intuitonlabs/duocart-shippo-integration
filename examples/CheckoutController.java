@@ -1,3 +1,8 @@
+
+import static com.intuitionlabs.shippoduocartintegration.utiltiy.ShippoUtility.getShippingRate;
+import static com.intuitionlabs.shippoduocartintegration.utiltiy.ShippoUtility.initShipping;
+import static com.intuitionlabs.shippoduocartintegration.utiltiy.ParcelUtility.getParcelInfo;
+
 public class CheckoutController {
 
     // Add CompanyInfoService and Address converter to set the outbound address and destination address
@@ -24,7 +29,7 @@ public class CheckoutController {
         double cartWeight = checkout.getCart().getWeight();
 
         // 3. Get shipping rate from Shippo based on parcel dimensions and weight
-        Double shippingRate = ShippoUtility.getShippingRate(addressConverter.toShippoAddress(checkout.getShippingAddress()), addressConverter.toFromShippoAddress(companyInfo), ParcelUtility.getParcelInfo(cartWeight));
+        Double shippingRate = getShippingRate(addressConverter.toShippoAddress(checkout.getShippingAddress()), addressConverter.toFromShippoAddress(companyInfo), getParcelInfo(cartWeight));
         // 4. Set the delivery cost
         checkout.setDelivery(shippingRate);
         Checkout saved = service.save(checkout);
@@ -44,7 +49,7 @@ public class CheckoutController {
         double cartWeight = checkout.getCart().getWeight();
 
         // 3. Create parcel and shippement with Shippo
-        ShippoTrackingInformation trackingInformation = initShipping(addressConverter.toShippoAddress(checkout.getShippingAddress()),  addressConverter.toFromShippoAddress(companyInfo), ParcelUtility.getParcelInfo(cartWeight), order.getDeliveryCost());
+        ShippoTrackingInformation trackingInformation = initShipping(addressConverter.toShippoAddress(checkout.getShippingAddress()),  addressConverter.toFromShippoAddress(companyInfo), getParcelInfo(cartWeight), order.getDeliveryCost());
 
         // 4. Set the returned informaton from the shippment
         order.setDeliveryCarrier(trackingInformation.getCarrier());

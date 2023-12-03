@@ -7,27 +7,37 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>io.github.intuitonlabs</groupId>
     <artifactId>duocart-shippo-integration</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0</version>
+    <packaging>jar</packaging>
+    <version>1.0.1</version>
     <name>DuloCart Shippo integration</name>
     <description>DuloCart e-commerce RESTful API Shippo - Shipping service integration</description>
-
+    <scm>
+        <connection>scm:git:git@github.com:intuitonlabs/duocart-shippo-integration.git</connection>
+        <developerConnection>scm:git:ssh://github.com:intuitonlabs/duocart-shippo-integration.git</developerConnection>
+        <url>https://github.com/intuitonlabs/duocart-shippo-integration/tree/master</url>
+    </scm>
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
 
     <developers>
         <developer>
-            <name>Mihael Hadzhiev</name>
+            <name>Intuitionlabs</name>
             <email>intuitionlabs@proton.me</email>
-            <organization>Intuitionlabs</organization>
+            <organization>Intuitionlabs Inc</organization>
             <organizationUrl>https://github.com/intuitonlabs</organizationUrl>
         </developer>
     </developers>
@@ -42,12 +52,6 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-
-    <scm>
-        <connection>scm:git:git@github.com:intuitonlabs/duocart-shippo-integration.git</connection>
-        <developerConnection>scm:git:ssh://github.com:intuitonlabs/duocart-shippo-integration.git</developerConnection>
-        <url>https://github.com/intuitonlabs/duocart-shippo-integration/tree/master</url>
-    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -86,12 +90,29 @@
             <artifactId>shippo-java-client</artifactId>
             <version>3.2.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.3.0.Final</version>
-        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Nexus Staging Plugin Configuration -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!-- Nexus Server ID -->
+                    <serverId>ossrh</serverId>
+                    <!-- Nexus Repository URL -->
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <!-- Auto release after close -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <!-- Other configuration options as needed -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <profile>
@@ -104,6 +125,7 @@
             </activation>
             <build>
                 <plugins>
+                    <!-- Maven GPG Plugin for signing artifacts -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -118,6 +140,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Maven Javadoc Plugin for attaching Javadocs -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -134,6 +158,8 @@
                             <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                         </configuration>
                     </plugin>
+
+                    <!-- Maven Source Plugin for attaching sources -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -147,6 +173,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Maven Assembly Plugin for creating JARs with dependencies -->
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
                         <configuration>
@@ -155,17 +183,8 @@
                             </descriptorRefs>
                         </configuration>
                     </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.7</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
+
+                    <!-- Maven Compiler Plugin for setting Java version and annotation processing -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
@@ -180,6 +199,19 @@
                                     <version>1.18.30</version>
                                 </path>
                             </annotationProcessorPaths>
+                        </configuration>
+                    </plugin>
+
+                    <!-- Nexus Staging Plugin (repeated for visibility) -->
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
