@@ -7,7 +7,7 @@
     <groupId>io.github.intuitonlabs</groupId>
     <artifactId>duocart-shippo-integration</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1</version>
+    <version>1.1.1</version>
     <name>DuloCart Shippo integration</name>
     <description>DuloCart e-commerce RESTful API Shippo - Shipping service integration</description>
     <scm>

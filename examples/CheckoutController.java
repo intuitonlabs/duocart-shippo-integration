@@ -16,10 +16,10 @@ public class CheckoutController {
 
     // Following changes need to be applied to getCustomerCheckOut() endpoint
     @GetMapping(value = "/{customerId}")
-    public ResponseEntity<CheckoutDto> getCustomerCheckOut(@PathVariable("customerId") Long id) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public ResponseEntity<CheckoutDto> getCustomerCheckOut(@PathVariable("customerId") Long id)  {
         Checkout checkout = service.findByCustomerId(id);
 
-        // 1. Get comany info for outbound address
+        // 1. Get company info for outbound address
         CompanyInfo companyInfo = companyInfoService.findById(1L);
 
         Optional<Address> primaryAddress = checkout.getCustomer().getShippingAddresses().stream().filter(x -> x.getType().equals(AddressType.SHIPPING) && x.isPrimary()).findFirst();
@@ -29,7 +29,7 @@ public class CheckoutController {
         double cartWeight = checkout.getCart().getWeight();
 
         // 3. Get shipping rate from Shippo based on parcel dimensions and weight
-        Double shippingRate = getShippingRate(addressConverter.toShippoAddress(checkout.getShippingAddress()), addressConverter.toFromShippoAddress(companyInfo), getParcelInfo(cartWeight));
+        Double shippingRate = getShippingRate(addressConverter.shippoAddressFrom(companyInfo), addressConverter.shippoAddressTo(checkout.getShippingAddress()), getParcelsInfo(cartWeight));
         // 4. Set the delivery cost
         checkout.setDelivery(shippingRate);
         Checkout saved = service.save(checkout);
@@ -39,7 +39,7 @@ public class CheckoutController {
 
     // Following changes need to be applied to submitOrder() endpoint
     @PatchMapping(value = "/submit/{id}")
-    public ResponseEntity<HttpStatus> submitOrder(@PathVariable("id") Long id) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public ResponseEntity<HttpStatus> submitOrder(@PathVariable("id") Long id) {
         Checkout checkout = service.findById(id);
         CompanyInfo companyInfo = companyInfoService.findById(1L);
         Order order = orderConverter.toOrderFromCheckout(checkout);
@@ -48,18 +48,18 @@ public class CheckoutController {
         // 1. Get cart weight based on all products in cart
         double cartWeight = checkout.getCart().getWeight();
 
-        // 3. Create parcel and shippement with Shippo
-        ShippoTrackingInformation trackingInformation = initShipping(addressConverter.toShippoAddress(checkout.getShippingAddress()),  addressConverter.toFromShippoAddress(companyInfo), getParcelInfo(cartWeight), order.getDeliveryCost());
+        // 3. Create parcel and shipment with Shippo
+        ShippoTrackingInformation trackingInformation = initShipping(addressConverter.shippoAddressTo(checkout.getShippingAddress()),  addressConverter.shippoAddressFrom(companyInfo), getParcelsInfo(cartWeight), order.getDeliveryCost());
 
-        // 4. Set the returned informaton from the shippment and add it to the order
+        // 4. Set the returned information from the shipment and add it to the order
         Shipment shipment = Shipment.builder()
-                .trackingUrl(trackingInformation.gettrackingUrl())
+                .trackingUrl(trackingInformation.getTrackingUrl())
                 .trackingNumber(trackingInformation.getTrackingNumber())
                 .carrier(trackingInformation.getCarrier())
                 .labelUrl(trackingInformation.getLabelUrl())
                 .build();
 
-        order.addShippments(shipment);
+        order.addShipment(shipment);
         orderService.save(order);
 
         return ResponseEntity.ok(HttpStatus.CREATED);

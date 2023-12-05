@@ -25,7 +25,7 @@ public class ShippoUtility {
         Shippo.setApiVersion(API_VERSION);
     }
 
-    public static Double getShippingRate(ShippoAddress toAddress, ShippoAddress fromAddress, List<ParcelInfo> parcelInfo) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Double getShippingRate(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
         com.shippo.model.Address toAddressShippo = createToAddress(toAddress);
@@ -43,7 +43,7 @@ public class ShippoUtility {
     }
 
 
-    public static ShippoTrackingInformation initShipping(ShippoAddress toAddress, ShippoAddress fromAddress, List<ParcelInfo> parcelInfo, Double foundRate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static ShippoTrackingInformation initShipping(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo, Double foundRate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
         com.shippo.model.Address toAddressShippo = createToAddress(toAddress);

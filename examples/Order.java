@@ -9,15 +9,15 @@ public class Order {
 
     // Add proparty for shipments in the Order.java class
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Shipment shipments;
+    private Shipment shipment;
 
 
 
     // Add method for adding shipment
-    public void addShippments(Shippment shippment) {
-        if(Objects.nonNull(shippment)) {
-            shippment.setOrder(this);
-            this.shippment = shippment;
+    public void addShipment(Shipment shipment) {
+        if(Objects.nonNull(shipment)) {
+            shipment.setOrder(this);
+            this.shipment = shipment;
         }
     }
 }
