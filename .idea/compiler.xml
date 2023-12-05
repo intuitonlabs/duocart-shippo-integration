@@ -13,7 +13,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="duocart-shippo-integration" options="-parameters" />
+      <module name="duocart-shippo-integration" options="" />
     </option>
   </component>
 </project>

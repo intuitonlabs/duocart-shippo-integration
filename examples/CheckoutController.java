@@ -51,15 +51,18 @@ public class CheckoutController {
         // 3. Create parcel and shippement with Shippo
         ShippoTrackingInformation trackingInformation = initShipping(addressConverter.toShippoAddress(checkout.getShippingAddress()),  addressConverter.toFromShippoAddress(companyInfo), getParcelInfo(cartWeight), order.getDeliveryCost());
 
-        // 4. Set the returned informaton from the shippment
-        order.setDeliveryCarrier(trackingInformation.getCarrier());
-        order.setTrackingNumber(trackingInformation.getTrackingNumber());
-        order.setLabelUrl(trackingInformation.getLabelUrl());
+        // 4. Set the returned informaton from the shippment and add it to the order
+        Shipment shipment = Shipment.builder()
+                .trackingUrl(trackingInformation.gettrackingUrl())
+                .trackingNumber(trackingInformation.getTrackingNumber())
+                .carrier(trackingInformation.getCarrier())
+                .labelUrl(trackingInformation.getLabelUrl())
+                .build();
 
+        order.addShippments(shipment);
         orderService.save(order);
 
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
-
 
 }

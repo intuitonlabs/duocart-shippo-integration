@@ -2,6 +2,9 @@ package com.intuitionlabs.shippoduocartintegration.utiltiy;
 
 import com.intuitionlabs.shippoduocartintegration.model.ParcelInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ParcelUtility {
 
     /**
@@ -11,23 +14,31 @@ public class ParcelUtility {
      * @return
      */
 
-    public static ParcelInfo getParcelInfo(double weight) {
+    private static Double ParcelMaxWeight = 25.0;
 
-        if (weight <= 1.5) {
-            return smallParcelOne(weight);
-        } else if (weight <= 3) {
-            return smallParcelTwo(weight);
-        } else if (weight <= 7) {
-            return mediumParcelOne(weight);
-        } else if (weight <= 12) {
-            return mediumParcelTwo(weight);
-        } else if (weight <= 18) {
-            return largeParcelOne(weight);
-        } else if (weight <= 25) {
-            return largeParcelTwo(weight);
+    public static List<ParcelInfo> getParcelsInfo(double weight) {
+        List<ParcelInfo> parcels = new ArrayList<>();
+
+        while(weight != 0.0) {
+            if (weight <= 1.5) {
+                parcels.add(smallParcelOne(weight));
+            } else if (weight <= 3) {
+                parcels.add(smallParcelTwo(weight));
+            } else if (weight <= 7) {
+                parcels.add(mediumParcelOne(weight));
+            } else if (weight <= 12) {
+                parcels.add(mediumParcelTwo(weight));
+            } else if (weight <= 18) {
+                parcels.add(largeParcelOne(weight));
+            } else if (weight <= 25) {
+                parcels.add(largeParcelTwo(weight));
+            } else {
+                parcels.add(largeParcelTwo(ParcelMaxWeight));
+            }
+            weight -= Double.parseDouble(parcels.get(parcels.size() - 1).getWeight());
         }
 
-        return null;
+        return parcels;
     }
 
 

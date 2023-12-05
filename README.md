@@ -10,12 +10,13 @@ With this dependency you can add support for:  [Shippo](https://goshippo.com/) s
 <dependency>
     <groupId>io.github.intuitonlabs</groupId>
     <artifactId>duocart-shippo-integration</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 -  After installation add the code from ```/examples``` directory to ```/contorller/storefront/CheckoutController.java``` and ```/converter/AddressConverter.java```
--  You can extend the class ```ParcelUtility``` and overwrite method ```getParcelInfo(double weight)``` from this dependency and add custom dimensions and weight reflecting your parcels. Currently the parcel dimensions are based on DHL carrier.
-- After  creating account at Shippo and get the API_KEY you need to add is as envirument variable named ```SHIPPO_API_KEY```
+-  You need to make small changes to ```Order.java``` class and add ```Shipment.java``` class in the  project, available in ```/examples``` folder
+-  You can extend the class ```ParcelUtility``` and overwrite method ```getParcelsInfo(double weight)``` from this dependency and add custom dimensions and weight reflecting your parcels. Currently, the parcel dimensions are based on DHL carrier with max weight of 25kg
+-  After  creating account at Shippo and get the API_KEY you need to add is as envirument variable named ```SHIPPO_API_KEY```
 
 ### 👨‍🏭 Contributors
 Feel free to contribute to this library.

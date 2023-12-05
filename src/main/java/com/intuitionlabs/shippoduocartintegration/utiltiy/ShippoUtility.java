@@ -25,7 +25,7 @@ public class ShippoUtility {
         Shippo.setApiVersion(API_VERSION);
     }
 
-    public static Double getShippingRate(ShippoAddress toAddress, ShippoAddress fromAddress, ParcelInfo parcelInfo) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Double getShippingRate(ShippoAddress toAddress, ShippoAddress fromAddress, List<ParcelInfo> parcelInfo) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
         com.shippo.model.Address toAddressShippo = createToAddress(toAddress);
@@ -43,7 +43,7 @@ public class ShippoUtility {
     }
 
 
-    public static ShippoTrackingInformation initShipping(ShippoAddress toAddress, ShippoAddress fromAddress, ParcelInfo parcelInfo, Double foundRate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static ShippoTrackingInformation initShipping(ShippoAddress toAddress, ShippoAddress fromAddress, List<ParcelInfo> parcelInfo, Double foundRate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
         com.shippo.model.Address toAddressShippo = createToAddress(toAddress);
@@ -53,7 +53,7 @@ public class ShippoUtility {
         Shipment shipment = createShipment(fromAddressShippo, toAddressShippo, parcel);
         Rate rates = getRate(shipment, foundRate);
 
-        return createTransactionReturnTrackingInfo(rates);
+        return createTransactionGetTrackingInfo(rates);
     }
 
     public static com.shippo.model.Address createToAddress(ShippoAddress address) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
@@ -89,16 +89,29 @@ public class ShippoUtility {
         return com.shippo.model.Address.create(fromAddressMap);
     }
 
-    public static List<Map<String, Object>> createParcel(ParcelInfo parcelInfo) {
-        Map<String, Object> parcelMap = new HashMap<>();
-        parcelMap.put("length", parcelInfo.getLength());
-        parcelMap.put("width", parcelInfo.getWidth());
-        parcelMap.put("height", parcelInfo.getHeight());
-        parcelMap.put("distance_unit", parcelInfo.getDistance_unit());
-        parcelMap.put("weight", parcelInfo.getWeight());
-        parcelMap.put("mass_unit", parcelInfo.getMass_unit());
+    /**
+     * Create parcels form the parcelsInfo list
+     * Handle cart with weight more than max parcel weight of the carrier parcels
+     * @param parcelsInfo
+     * @return
+     */
+    public static List<Map<String, Object>> createParcel(List<ParcelInfo> parcelsInfo) {
+        List<Map<String, Object>> parcels = new ArrayList<>();
 
-        return List.of(parcelMap);
+        for(ParcelInfo info : parcelsInfo) {
+            Map<String, Object> parcelMap = new HashMap<>();
+
+            parcelMap.put("length", info.getLength());
+            parcelMap.put("width", info.getWidth());
+            parcelMap.put("height", info.getHeight());
+            parcelMap.put("distance_unit", info.getDistance_unit());
+            parcelMap.put("weight", info.getWeight());
+            parcelMap.put("mass_unit", info.getMass_unit());
+
+            parcels.add(parcelMap);
+        }
+
+        return parcels;
     }
 
     public static Shipment createShipment(com.shippo.model.Address addressFrom, com.shippo.model.Address addressTo, List<Map<String, Object>> parcels) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
@@ -111,6 +124,7 @@ public class ShippoUtility {
         return Shipment.create(shipmentMap);
     }
 
+    //TODO: Consider adding currency code from configuration of the API
     public static RateCollection createRateCollection(Shipment shipment) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> rateMap = new HashMap<String, Object>();
         rateMap.put("id", shipment.getObjectId());
@@ -124,7 +138,7 @@ public class ShippoUtility {
         return shipment.getRates().stream().filter(x -> Double.parseDouble((String) x.getAmount()) == foundRate).findFirst().get();
     }
 
-    public static ShippoTrackingInformation createTransactionReturnTrackingInfo(Rate rate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static ShippoTrackingInformation createTransactionGetTrackingInfo(Rate rate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> transParams = new HashMap<>();
         transParams.put("rate", rate.getObjectId());
         transParams.put("async", false);
@@ -133,11 +147,13 @@ public class ShippoUtility {
         if (transaction.getStatus().equals(SUCCESS_SHIPMENT_RESPONSE_TEXT)) {
             String shippingLabel = transaction.getLabelUrl().toString();
             String trackingNumber = transaction.getTrackingNumber().toString();
+            String trackingUrl = transaction.getTrackingUrlProvider().toString();
 
             return ShippoTrackingInformation.builder()
                     .trackingNumber(trackingNumber)
                     .carrier(rate.getProvider().toString())
                     .labelUrl(shippingLabel)
+                    .trackingUrl(trackingUrl)
                     .build();
 
         } else {
