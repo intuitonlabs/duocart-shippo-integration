@@ -10,7 +10,7 @@ With this dependency you can add support for:  [Shippo](https://goshippo.com/) s
 <dependency>
     <groupId>io.github.intuitonlabs</groupId>
     <artifactId>duocart-shippo-integration</artifactId>
-    <version>1.1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 -  After installation add the code from ```/examples``` directory to ```/contorller/storefront/CheckoutController.java``` and ```/converter/AddressConverter.java```
