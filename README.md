@@ -1,4 +1,4 @@
-# duocart-shippo-integration
+# dulocart-shippo-integration
 Dependancy for Shippo integration for DuoCart API
 
 ## ℹ️ Info
