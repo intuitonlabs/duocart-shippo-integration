@@ -1,10 +1,10 @@
-package com.intuitionlabs.shippoduocartintegration.utiltiy;
+package com.intuitionlabs.dulocartshippointegration.utiltiy;
 
-import com.intuitionlabs.shippoduocartintegration.exceptions.InvalidAddressException;
-import com.intuitionlabs.shippoduocartintegration.exceptions.TransactionFailException;
-import com.intuitionlabs.shippoduocartintegration.model.ParcelInfo;
-import com.intuitionlabs.shippoduocartintegration.model.ShippoAddress;
-import com.intuitionlabs.shippoduocartintegration.model.ShippoTrackingInformation;
+import com.intuitionlabs.dulocartshippointegration.exceptions.InvalidAddressException;
+import com.intuitionlabs.dulocartshippointegration.exceptions.TransactionFailException;
+import com.intuitionlabs.dulocartshippointegration.model.ParcelInfo;
+import com.intuitionlabs.dulocartshippointegration.model.ShippoAddress;
+import com.intuitionlabs.dulocartshippointegration.model.ShippoTrackingInformation;
 import com.shippo.Shippo;
 import com.shippo.exception.APIConnectionException;
 import com.shippo.exception.APIException;

@@ -1,6 +1,6 @@
-package com.intuitionlabs.shippoduocartintegration.utiltiy;
+package com.intuitionlabs.dulocartshippointegration.utiltiy;
 
-import com.intuitionlabs.shippoduocartintegration.model.ParcelInfo;
+import com.intuitionlabs.dulocartshippointegration.model.ParcelInfo;
 
 import java.util.ArrayList;
 import java.util.List;

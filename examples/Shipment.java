@@ -1,4 +1,4 @@
-package com.intuitionlabs.shippoduocartintegration.model;
+package com.intuitionlabs.dulocartshippointegration.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

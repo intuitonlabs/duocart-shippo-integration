@@ -1,7 +1,7 @@
 
-import static com.intuitionlabs.shippoduocartintegration.utiltiy.ShippoUtility.getShippingRate;
-import static com.intuitionlabs.shippoduocartintegration.utiltiy.ShippoUtility.initShipping;
-import static com.intuitionlabs.shippoduocartintegration.utiltiy.ParcelUtility.getParcelInfo;
+import static com.intuitionlabs.dulocartshippointegration.utiltiy.ShippoUtility.getShippingRate;
+import static com.intuitionlabs.dulocartshippointegration.utiltiy.ShippoUtility.initShipping;
+import static com.intuitionlabs.dulocartshippointegration.utiltiy.ParcelUtility.getParcelInfo;
 
 public class CheckoutController {
 

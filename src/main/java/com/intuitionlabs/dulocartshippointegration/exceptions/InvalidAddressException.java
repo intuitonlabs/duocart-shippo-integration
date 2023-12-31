@@ -1,4 +1,4 @@
-package com.intuitionlabs.shippoduocartintegration.exceptions;
+package com.intuitionlabs.dulocartshippointegration.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -3,24 +3,28 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
- 
+
     <groupId>io.github.intuitonlabs</groupId>
-    <artifactId>duocart-shippo-integration</artifactId>
+    <artifactId>dulocart-shippo-integration</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.1</version>
+    <version>1.2</version>
     <name>DuloCart Shippo integration</name>
     <description>DuloCart e-commerce RESTful API Shippo - Shipping service integration</description>
+    <url>https://github.com/intuitonlabs/duocart-shippo-integration</url>
+
     <scm>
-        <connection>scm:git:git@github.com:intuitonlabs/duocart-shippo-integration.git</connection>
-        <developerConnection>scm:git:ssh://github.com:intuitonlabs/duocart-shippo-integration.git</developerConnection>
-        <url>https://github.com/intuitonlabs/duocart-shippo-integration/tree/master</url>
+        <connection>scm:git:git@github.com:intuitonlabs/dulocart-shippo-integration.git</connection>
+        <developerConnection>scm:git:ssh://github.com:intuitonlabs/dulocart-shippo-integration.git</developerConnection>
+        <url>https://github.com/intuitonlabs/dulocart-shippo-integration/tree/master</url>
     </scm>
+
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
     <repositories>
         <repository>
             <id>central</id>
@@ -50,8 +54,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -64,7 +68,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.7.18</version>
+            <version>3.2.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>ch.qos.logback</groupId>

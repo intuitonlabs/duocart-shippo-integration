@@ -1,4 +1,4 @@
-package com.intuitionlabs.shippoduocartintegration.model;
+package com.intuitionlabs.dulocartshippointegration.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
