@@ -25,38 +25,37 @@ public class ShippoUtility {
         Shippo.setApiVersion(API_VERSION);
     }
 
-    public static Double getShippingRate(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Rate getShippingRate(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo, Currency currency) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
-        com.shippo.model.Address toAddressShippo = createToAddress(toAddress);
+        Address toAddressShippo = createToAddress(toAddress);
         throwInvalidAddressException(toAddressShippo);
-        com.shippo.model.Address fromAddressShippo = createFromAddress(fromAddress);
+        Address fromAddressShippo = createFromAddress(fromAddress);
         throwInvalidAddressException(fromAddressShippo);
 
         List<Map<String, Object>> parcel = createParcel(parcelInfo);
 
         Shipment shipment = createShipment(fromAddressShippo, toAddressShippo, parcel);
-        RateCollection rateCollection = createRateCollection(shipment);
-        Collections.sort(rateCollection.getData(), Comparator.comparingDouble((rate) -> Double.parseDouble((String)rate.getAmount())));
+        RateCollection rateCollection = createRateCollection(shipment, currency);
+        Collections.sort(rateCollection.getData(), Comparator.comparingDouble((rate) -> Double.parseDouble((String)rate.getAmountLocal())));
 
-        return Double.parseDouble((String)rateCollection.getData().get(0).getAmount());
+        return rateCollection.getData().get(0);
     }
 
 
-    public static ShippoTrackingInformation initShipping(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo, Double foundRate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static ShippoTrackingInformation initShipping(ShippoAddress fromAddress, ShippoAddress toAddress, List<ParcelInfo> parcelInfo, Rate rate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         setApi();
 
-        com.shippo.model.Address toAddressShippo = createToAddress(toAddress);
-        com.shippo.model.Address fromAddressShippo = createFromAddress(fromAddress);
+        Address toAddressShippo = createToAddress(toAddress);
+        Address fromAddressShippo = createFromAddress(fromAddress);
 
         List<Map<String, Object>> parcel = createParcel(parcelInfo);
-        Shipment shipment = createShipment(fromAddressShippo, toAddressShippo, parcel);
-        Rate rates = getRate(shipment, foundRate);
+        createShipment(fromAddressShippo, toAddressShippo, parcel);
 
-        return createTransactionGetTrackingInfo(rates);
+        return createTransactionGetTrackingInfo(rate);
     }
 
-    public static com.shippo.model.Address createToAddress(ShippoAddress address) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Address createToAddress(ShippoAddress address) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> fromAddressMap = new HashMap<String, Object>();
         fromAddressMap.put("name", address.getName());
         fromAddressMap.put("street1", address.getStreet1());
@@ -69,10 +68,10 @@ public class ShippoUtility {
         fromAddressMap.put("phone", address.getPhone());
         fromAddressMap.put("validate", true);
 
-        return com.shippo.model.Address.create(fromAddressMap);
+        return Address.create(fromAddressMap);
     }
 
-    public static com.shippo.model.Address createFromAddress(ShippoAddress address) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Address createFromAddress(ShippoAddress address) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> fromAddressMap = new HashMap<String, Object>();
         fromAddressMap.put("name", address.getName());
         fromAddressMap.put("company", address.getCompany());
@@ -86,7 +85,7 @@ public class ShippoUtility {
         fromAddressMap.put("phone", address.getPhone());
         fromAddressMap.put("validate", true);
 
-        return com.shippo.model.Address.create(fromAddressMap);
+        return Address.create(fromAddressMap);
     }
 
     /**
@@ -114,7 +113,7 @@ public class ShippoUtility {
         return parcels;
     }
 
-    public static Shipment createShipment(com.shippo.model.Address addressFrom, com.shippo.model.Address addressTo, List<Map<String, Object>> parcels) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static Shipment createShipment(Address addressFrom, Address addressTo, List<Map<String, Object>> parcels) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> shipmentMap = new HashMap<String, Object>();
         shipmentMap.put("address_to", addressTo);
         shipmentMap.put("address_from", addressFrom);
@@ -124,18 +123,22 @@ public class ShippoUtility {
         return Shipment.create(shipmentMap);
     }
 
-    //TODO: Consider adding currency code from configuration of the API
-    public static RateCollection createRateCollection(Shipment shipment) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
+    public static RateCollection createRateCollection(Shipment shipment, Currency currency) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
         Map<String, Object> rateMap = new HashMap<String, Object>();
         rateMap.put("id", shipment.getObjectId());
-        rateMap.put("currency_code", "USD");
+        rateMap.put("currency_code", currency.getCurrencyCode());
         rateMap.put("async", false);
 
         return Shipment.getShippingRates(rateMap);
     }
 
-    public static Rate getRate(Shipment shipment, double foundRate) {
-        return shipment.getRates().stream().filter(x -> Double.parseDouble((String) x.getAmount()) == foundRate).findFirst().get();
+    public static Rate getRate(Shipment shipment, String rateId) {
+        Optional<Rate> foundRate = shipment.getRates().stream().filter(x -> x.getObjectId().equals(rateId)).findFirst();
+        if(foundRate.isEmpty()) {
+            throw new TransactionFailException(String.format("Shippo rate with id %s not found. Please try again as request another rate.", rateId));
+        }
+
+        return foundRate.get();
     }
 
     public static ShippoTrackingInformation createTransactionGetTrackingInfo(Rate rate) throws APIConnectionException, APIException, AuthenticationException, InvalidRequestException {
@@ -161,13 +164,12 @@ public class ShippoUtility {
         }
     }
 
-    public static Exception throwInvalidAddressException(com.shippo.model.Address address) {
+    public static Exception throwInvalidAddressException(Address address) {
         if(!address.getValidationResults().getIsValid()) {
             throw new InvalidAddressException(String.format("The provided address is invalid. Please enter correct value. Info address zip %s", address.getZip()));
         } else {
             return null;
         }
     }
-
 
 }
