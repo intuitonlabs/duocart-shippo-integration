@@ -56,7 +56,6 @@ public class CheckoutController {
                 .trackingUrl(trackingInformation.getTrackingUrl())
                 .trackingNumber(trackingInformation.getTrackingNumber())
                 .carrier(trackingInformation.getCarrier())
-                .labelUrl(trackingInformation.getLabelUrl())
                 .build();
 
         order.addShipment(shipment);
