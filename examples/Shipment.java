@@ -20,7 +20,6 @@ public class Shipment {
 
     private String carrier;
     private String trackingNumber;
-    private String labelUrl;
     private String trackingUrl;
 
     @OneToOne
