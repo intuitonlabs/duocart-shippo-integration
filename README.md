@@ -18,6 +18,7 @@ With this dependency you can add support for:  [Shippo](https://goshippo.com/) s
 -  You can extend the class ```ParcelUtility``` and overwrite method ```getParcelsInfo(double weight)``` from this dependency and add custom dimensions and weight reflecting your parcels. Currently, the parcel dimensions are based on DHL carrier with max weight of 25kg
 -  After  creating account at Shippo and get the API_KEY you need to add is as envirument variable named ```SHIPPO_API_KEY```
 - In ```CompanyInfo.java``` class you need to have set ```private Currency currency``` property
+in ISO 4217 format
 - After all of the following is set you need to refine the desired carriers accounts from the Shippo dashboard.
 - The library pick the first available smaller rate and use it for the shipping.
 - If *FIXED* Shipping rate ```( deliveryCost )``` property is set in ```CompanyInfo.java``` the shipping cost for the order will be this value.The real value for the shipping will be displayed in Shippo
