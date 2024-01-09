@@ -32,5 +32,5 @@ Feel free to contribute to this library.
 There is no affiliation between Intuitionlabs and the project Dulo cart with Shippo service.
 
 ### ⚖️ License 
-The integration is with APACHE 2 License as the Shippo Java Client which is used is with MIT.
+The integration is with MIT License same as the Shippo library.
 
